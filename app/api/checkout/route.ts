@@ -77,8 +77,8 @@ export async function POST(request: Request) {
         const session = await stripe.checkout.sessions.create({
             line_items: stripeProducts,
             mode: 'payment',
-            success_url: "http://localhost:3000/success",
-            cancel_url: "http://localhost:3000"
+            success_url: "https://eshop-9mt0037vq-manos-projects-3261acf5.vercel.app/success",
+            cancel_url: "https://eshop-9mt0037vq-manos-projects-3261acf5.vercel.app"
         })
         if (!session.url) {
             throw new Error('Failed to create checkout session')
