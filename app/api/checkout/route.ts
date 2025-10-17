@@ -1,6 +1,6 @@
 //'use client'
 import { NextResponse } from 'next/server'
-//import { headers } from 'next/headers'
+import { headers } from 'next/headers'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!, {
@@ -25,8 +25,8 @@ interface CartItem {
 export async function POST(request: Request) {
 
     try {
-        // const headersList = await headers()
-        // const origin = headersList.get('origin')
+        const headersList = await headers()
+        const origin = headersList.get('origin') || headersList.get('host')
 
         const { cartItems }: { cartItems: CartItem[] } = await request.json()
         let activeProducts = await stripe.products.list({
@@ -77,8 +77,8 @@ export async function POST(request: Request) {
         const session = await stripe.checkout.sessions.create({
             line_items: stripeProducts,
             mode: 'payment',
-            success_url: "https://eshop-9mt0037vq-manos-projects-3261acf5.vercel.app/success",
-            cancel_url: "https://eshop-9mt0037vq-manos-projects-3261acf5.vercel.app"
+            success_url: `${origin}/success`,
+            cancel_url: `${origin}`
         })
         if (!session.url) {
             throw new Error('Failed to create checkout session')
